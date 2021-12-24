@@ -1,5 +1,38 @@
+
 .container {
-  padding: 0 2rem;
+  padding: 2rem;
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  background-color: #a0a0a4;
+  justify-content: center;
+  align-items: center;
+}
+
+.form{
+  display: flex;
+  gap: 15px;
+  flex-direction: column;
+  justify-content:center ;
+  align-items: center;
+}
+
+.input{
+  display: block;
+  width: 300px;
+  height: 40px;
+  border-radius: 10px;
+  border: 0px;
+}
+
+.buttonSubmit{
+  width: 300px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: #0070f3;
+  color: #eaeaea;
+  border: 0px;
+  font-size: 15px;
 }
 
 .main {
