@@ -1,6 +1,7 @@
 import axios, { AxiosError } from "axios";
 import Router from "next/router";
 import { destroyCookie, parseCookies, setCookie } from "nookies";
+import { setCookies, signOut } from "../context/AuthContext";
 
 let cookies = parseCookies();
 let isRefreshing = false;
@@ -33,26 +34,15 @@ api.interceptors.response.use(
             .post("/refresh", {
               refreshToken,
             })
-            .then((response) => {
+            .then(async (response) => {
               const { token } = response.data;
 
-              setCookie(undefined, "nextauth.token", token, {
-                maxAge: 60 * 60 * 24 * 30, // 30 days
-                path: "/",
-              });
-              setCookie(
-                undefined,
-                "nextauth.refreshToken",
-                response.data.refreshToken,
-                {
-                  maxAge: 60 * 60 * 24 * 30, // 30 days
-                  path: "/",
-                }
-              );
+              await setCookies(token, response.data.refreshToken);
 
               api.defaults.headers["Authorization"] = `Bearer ${token}`;
 
               failedRequestQueue.forEach((request) => request.onSuccess(token));
+
               failedRequestQueue = [];
             })
             .catch((err) => {
@@ -77,10 +67,9 @@ api.interceptors.response.use(
           });
         });
       } else {
-        destroyCookie(undefined, "nextauth.token");
-        destroyCookie(undefined, "nextauth.refreshToken");
-        Router.push("/");
+        signOut();
       }
     }
+    return Promise.reject(error);
   }
 );
