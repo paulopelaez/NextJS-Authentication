@@ -1,12 +1,15 @@
 import axios, { AxiosError } from "axios";
-import Router from "next/router";
-import { destroyCookie, parseCookies, setCookie } from "nookies";
+import { GetServerSidePropsContext } from "next";
+import { parseCookies } from "nookies";
 import { setCookies, signOut } from "../context/AuthContext";
+import { AuthTokenError } from "./errors/AuthTokenError";
 
 let isRefreshing = false;
 let failedRequestQueue = [];
 
-export function setupAPIClient(ctx = undefined) {
+type Context = undefined | GetServerSidePropsContext;
+
+export function setupAPIClient(ctx: Context = undefined) {
   let cookies = parseCookies(ctx);
 
   const api = axios.create({
@@ -77,6 +80,8 @@ export function setupAPIClient(ctx = undefined) {
         } else {
           if (process.browser) {
             signOut();
+          } else {
+            return Promise.reject(new AuthTokenError());
           }
         }
       }
