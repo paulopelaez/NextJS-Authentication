@@ -1,4 +1,4 @@
-import type { GetServerSideProps, NextPage } from "next";
+import type { NextPage } from "next";
 import { FormEvent, useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import styles from "../styles/Home.module.css";
